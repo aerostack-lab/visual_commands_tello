@@ -1,7 +1,7 @@
 #!/bin/bash
 
 NUMID_DRONE=0
-export AEROSTACK_PROJECT=${AEROSTACK_STACK}/projects/visual_commands_tello
+export AEROSTACK_PROJECT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 . ${AEROSTACK_STACK}/config/mission/setup.sh
 
@@ -55,15 +55,6 @@ roslaunch python_based_mission_interpreter_process python_based_mission_interpre
   mission_configuration_folder:=${AEROSTACK_PROJECT}/configs/mission;
 exec bash\""  \
 `#---------------------------------------------------------------------------------------------` \
-`# Behavior Execution Viewer                                                                   ` \
-`#---------------------------------------------------------------------------------------------` \
---tab --title "Behavior Execution Viewer" --command "bash -c \"
-roslaunch behavior_execution_viewer behavior_execution_viewer.launch --wait \
-  robot_namespace:=drone$NUMID_DRONE \
-  drone_id:=$NUMID_DRONE \
-  catalog_path:=${AEROSTACK_PROJECT}/configs/mission/behavior_catalog.yaml;
-exec bash\""  \
-`#---------------------------------------------------------------------------------------------` \
 `# Belief Manager                                                                              ` \
 `#---------------------------------------------------------------------------------------------` \
 --tab --title "Belief Manager" --command "bash -c \"
@@ -76,7 +67,7 @@ exec bash\""  \
 `# Belief Updater                                                                              ` \
 `#---------------------------------------------------------------------------------------------` \
 --tab --title "Belief Updater" --command "bash -c \"
-roslaunch belief_updater_process belief_updater_process.launch --wait \
+roslaunch common_belief_updater_process common_belief_updater_process.launch --wait \
     drone_id_namespace:=drone$NUMID_DRONE \
     drone_id:=$NUMID_DRONE;
 exec bash\""  \
